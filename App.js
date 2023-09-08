@@ -3,6 +3,7 @@ import { TouchableOpacity, StyleSheet, Text, View, Image, Alert } from 'react-na
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SecondScreen from './Second';
+import InterestPage from './InterestPage';
 import ChatScreen from './ChatScreen';
 
 const Stack = createStackNavigator();
@@ -14,7 +15,7 @@ const Home = () => {
     navigation.navigate('Second');
   }
   const handleStartButtionPress = () => {
-    navigation.navigate('ChatScreen');
+    navigation.navigate('InterestPage');
   }
   return (
     <View style={styles.container}>
@@ -56,9 +57,26 @@ const App = () => {
           }}
         />
         <Stack.Screen
+          name="InterestPage"
+          component={InterestPage}
+          options={{
+            title: '偏好選擇',
+            headerStyle: {
+              backgroundColor: '#FCF2E6',
+            },
+            headerTitleStyle: {
+              fontSize: 20,
+            },
+            headerBackTitleStyle: {
+              fontSize: 20,
+            },
+            headerTintColor: '#7D6357',
+          }}
+        />
+        <Stack.Screen
           name="ChatScreen"
           component={ChatScreen}
-          options={{
+          options={({ navigation }) => ({
             title: '聊天機器人',
             headerStyle: {
               backgroundColor: '#FCF2E6',
@@ -70,14 +88,16 @@ const App = () => {
               fontSize: 20,
             },
             headerTintColor: '#7D6357',
-            heeaderRight: () => {
+            headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-
+                  navigation.navigate('Home');
                 }}
-              />
-            }
-          }}
+              >
+                <Text style={{ fontSize: 20, color: '#7D6357', marginLeft: 12 }}>離開</Text>
+              </TouchableOpacity>
+            )
+          })}
         />
       </Stack.Navigator>
     </NavigationContainer>

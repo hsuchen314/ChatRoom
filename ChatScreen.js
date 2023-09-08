@@ -21,7 +21,7 @@ const ChatScreen = () => {
                 },
                 {
                     headers: {
-                        Authorization: 'Bearer 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',
+                        Authorization: 'Bearer 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',
                         'Content-Type': 'application/json',
                     },
                 }
