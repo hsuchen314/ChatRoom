@@ -6,28 +6,14 @@ import SecondScreen from './Second';
 import InterestPage from './InterestPage';
 import ChatScreen from './ChatScreen';
 import { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
 const Home = () => {
   const navigation = useNavigation();
-  const [initialVisit, setInitialVisit] = useState(null);
+  const [initialVisit, setInitialVisit] = useState(true);
 
-  useEffect(() => {
-    AsyncStorage.getItem('initialVisit')
-      .then((value) => {
-        if (value === null) {
-          AsyncStorage.setItem('initialVisit', 'true');
-          setInitialVisit(true);
-        } else {
-          setInitialVisit(false);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-  }, []);
+  console.log('initialVisit 的值為: ', initialVisit)
 
   const handleAccountButtonPress = () => {
     navigation.navigate('Second');
@@ -38,6 +24,7 @@ const Home = () => {
     } else {
       navigation.navigate('ChatScreen');
     }
+    setInitialVisit(false)
   }
   return (
     <View style={styles.container}>
