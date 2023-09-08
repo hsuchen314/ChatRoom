@@ -5,25 +5,47 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SecondScreen from './Second';
 import InterestPage from './InterestPage';
 import ChatScreen from './ChatScreen';
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
 const Home = () => {
   const navigation = useNavigation();
+  const [initialVisit, setInitialVisit] = useState(null);
 
-  const handleAccountButtionPress = () => {
+  useEffect(() => {
+    AsyncStorage.getItem('initialVisit')
+      .then((value) => {
+        if (value === null) {
+          AsyncStorage.setItem('initialVisit', 'true');
+          setInitialVisit(true);
+        } else {
+          setInitialVisit(false);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+  }, []);
+
+  const handleAccountButtonPress = () => {
     navigation.navigate('Second');
   }
-  const handleStartButtionPress = () => {
-    navigation.navigate('InterestPage');
+  const handleStartButtonPress = () => {
+    if (initialVisit === true) {
+      navigation.navigate('InterestPage');
+    } else {
+      navigation.navigate('ChatScreen');
+    }
   }
   return (
     <View style={styles.container}>
       <Text style={styles.topic}>解憂聊天室</Text>
-      <TouchableOpacity onPress={handleStartButtionPress} style={styles.buttonStart}>
+      <TouchableOpacity onPress={handleStartButtonPress} style={styles.buttonStart}>
         <Text style={styles.textStart}>開始聊天</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleAccountButtionPress} style={styles.buttonAccount}>
+      <TouchableOpacity onPress={handleAccountButtonPress} style={styles.buttonAccount}>
         <Text style={styles.textAccount}>帳號</Text>
       </TouchableOpacity>
       <Image style={styles.Image1} source={require('./assets/chat_first(1).png')} />
