@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { UserIdContext } from './App';
 
 const InterestPage = () => {
     const navigation = useNavigation();
@@ -14,6 +15,7 @@ const InterestPage = () => {
     const [techPressed, setTechPressed] = useState(true);
     const [outdoorPressed, setOutdoorPressed] = useState(true);
     const [sportPressed, setSportPressed] = useState(true);
+    const [user_id, setUser_id] = useContext(UserIdContext);
 
     const handleCheckButtonPress = () => {
         navigation.navigate('ChatScreen')

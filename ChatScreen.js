@@ -1,14 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StatusBar } from "expo-status-bar";
 import { TouchableOpacity, StyleSheet, Text, View, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import axios from 'axios';
 import { AntDesign } from '@expo/vector-icons';
+import { UserIdContext } from './App';
 import { useNavigation } from '@react-navigation/native';
 
 const ChatScreen = () => {
     const [inputText, setInputText] = useState('');
     const [chatHistory, setChatHistory] = useState([]);
     const scrollViewRef = useRef();
+    const { user_id, setUser_id } = useContext(UserIdContext);
 
 
     const sendMesssage = async () => {
@@ -48,6 +50,7 @@ const ChatScreen = () => {
                     contentContainerStyle={styles.chatContnet}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd()}
                 >
+                    <Text style={styles.dateHeader}>{currentDate}</Text>
                     {chatHistory.map((entry, index) => (
                         <View key={index} style={styles.chatEntry}>
                             {entry.user && (
@@ -151,6 +154,12 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         padding: 8,
         marginRight: 8,
+    },
+    dateHeader: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'blue',
+        textAlign: 'center',
     },
 });
 export default ChatScreen;

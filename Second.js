@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity, StyleSheet, Text, View, Image, TextInput } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { UserIdContext } from './App';
 
 const SecondScreen = () => {
+    const navigation = useNavigation();
     const [nickname, setNickname] = useState('');
     const [birthday, setBirthday] = useState('');
     const [userData, setUserData] = useState({ name: '', birthdate: '' });
+    const [user_id, setUser_id] = useContext(UserIdContext);
 
     useEffect(() => {
         fetch('https://rwfbjrfymkkuxbqcqjej.supabase.co/get-user-info/${user_id}')
@@ -33,6 +37,9 @@ const SecondScreen = () => {
             })
             .catch(error => console.error('Error', error));
     }
+    const handleHistoricalButton = () => {
+        navigation.navigate('Historical')
+    }
 
     return (
         <View style={styles.container}>
@@ -49,11 +56,16 @@ const SecondScreen = () => {
                 style={styles.inputBirthday}
                 placeholder='MM/DD'
                 onChangeText={text => setBirthday(text)}
-                value={userData.birthday}
+                value={userData.birthdate}
             />
             <Text style={{ ...styles.topic, position: 'absolute', top: 270, left: 60 }}>主題更換</Text>
             <Text style={{ ...styles.topic, position: 'absolute', top: 325, left: 60 }}>偏好設定</Text>
-            <Text style={{ ...styles.topic, position: 'absolute', top: 380, left: 60 }}>歷史紀錄</Text>
+            <TouchableOpacity
+                onPress={handleHistoricalButton}
+                style={{ position: 'absolute', top: 380, left: 60, zIndex: 1 }}
+            >
+                <Text style={styles.topic}>歷史紀錄</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.buttonUpdata} onPress={handleUpdate}>
                 <Text style={styles.Textupdata}>更新資料</Text>
             </TouchableOpacity>
