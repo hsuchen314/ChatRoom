@@ -50,7 +50,6 @@ const ChatScreen = () => {
                     contentContainerStyle={styles.chatContnet}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd()}
                 >
-                    <Text style={styles.dateHeader}>{currentDate}</Text>
                     {chatHistory.map((entry, index) => (
                         <View key={index} style={styles.chatEntry}>
                             {entry.user && (
@@ -154,12 +153,6 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         padding: 8,
         marginRight: 8,
-    },
-    dateHeader: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: 'blue',
-        textAlign: 'center',
     },
 });
 export default ChatScreen;

@@ -64,7 +64,7 @@ const SecondScreen = () => {
                 onPress={handleHistoricalButton}
                 style={{ position: 'absolute', top: 380, left: 60, zIndex: 1 }}
             >
-                <Text style={styles.topic}>歷史紀錄</Text>
+                <Text style={styles.topic}>心情報表</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonUpdata} onPress={handleUpdate}>
                 <Text style={styles.Textupdata}>更新資料</Text>

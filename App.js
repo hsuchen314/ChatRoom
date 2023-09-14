@@ -6,12 +6,10 @@ import SecondScreen from './Second';
 import InterestPage from './InterestPage';
 import ChatScreen from './ChatScreen';
 import Historical from './Historical';
-import MoodReport from './MoodReport';
 import { useEffect, useState, createContext } from 'react';
 
 const Stack = createStackNavigator();
 export const UserIdContext = createContext();
-export const GetCurrentTime = createContext();
 
 const Home = () => {
   const navigation = useNavigation();
@@ -63,9 +61,6 @@ const Home = () => {
 }
 
 const App = () => {
-
-  const [time, setTime] = useState('');
-
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Home'>
@@ -127,43 +122,19 @@ const App = () => {
             },
             headerTintColor: '#7D6357',
             headerLeft: () => (
-              <GetCurrentTime.Provider value={{ time, setTime }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    const currentTime = new Date();
-                    const formattedTime = currentTime.toLocaleTimeString();
-                    setTime(formattedTime);
-                    navigation.navigate('Home');
-                  }}
-                >
-                  <Text style={{ fontSize: 20, color: '#7D6357', marginLeft: 12 }}>離開</Text>
-                </TouchableOpacity>
-              </GetCurrentTime.Provider>
-
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Home');
+                }}
+              >
+                <Text style={{ fontSize: 20, color: '#7D6357', marginLeft: 12 }}>離開</Text>
+              </TouchableOpacity>
             )
           })}
         />
         <Stack.Screen
           name='Historical'
           component={Historical}
-          options={{
-            title: '歷史紀錄',
-            headerTintColor: '#7D6357',
-            headerStyle: {
-              backgroundColor: '#FCF2E6',
-            },
-            headerBackTitle: '返回',
-            headerTitleStyle: {
-              fontSize: 20,
-            },
-            headerBackTitleStyle: {
-              fontSize: 20,
-            },
-          }}
-        />
-        <Stack.Screen
-          name='MoodReport'
-          component={MoodReport}
           options={{
             title: '心情報表',
             headerTintColor: '#7D6357',
