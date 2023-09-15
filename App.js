@@ -6,20 +6,19 @@ import SecondScreen from './Second';
 import InterestPage from './InterestPage';
 import ChatScreen from './ChatScreen';
 import Historical from './Historical';
-import { useEffect, useState, createContext } from 'react';
+import { useEffect, useState } from 'react';
 
 const Stack = createStackNavigator();
-export const UserIdContext = createContext();
 
 const Home = () => {
   const navigation = useNavigation();
   const [initialVisit, setInitialVisit] = useState(true);
-  const [user_id, setUser_id] = useState('');
+  const [userId, setUser_id] = useState('');
 
   console.log('initialVisit 的值為: ', initialVisit)
 
   const handleAccountButtonPress = () => {
-    navigation.navigate('Second');
+    navigation.navigate('Second', { ID: userId });
   }
   const handleStartButtonPress = () => {
     if (initialVisit === true) {
@@ -31,32 +30,38 @@ const Home = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          user_id = data.user_id;
-          navigation.navigate('InterestPage');
+          console.log('data.user_id的值為:', data.user_id)
+          setUser_id(data.user_id)
+          navigation.navigate('InterestPage', { ID: userId });
         })
         .catch((error) => {
           console.error('請求失敗: ', error)
         })
     } else {
-      navigation.navigate('ChatScreen');
+      navigation.navigate('ChatScreen', { ID: userId });
     }
     setInitialVisit(false)
   }
+  /*useEffect(() => {
+    if (userId !== undefined && userId !== '') {
+      console.log('user_id已更新:', userId)
+      navigation.navigate('InterestPage')
+    }
+  }, [userId])*/
+
   return (
-    <UserIdContext.Provider value={{ user_id, setUser_id }}>
-      <View style={styles.container}>
-        <Text style={styles.topic}>解憂聊天室</Text>
-        <TouchableOpacity onPress={handleStartButtonPress} style={styles.buttonStart}>
-          <Text style={styles.textStart}>開始聊天</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleAccountButtonPress} style={styles.buttonAccount}>
-          <Text style={styles.textAccount}>帳號</Text>
-        </TouchableOpacity>
-        <Image style={styles.Image1} source={require('./assets/chat_first(1).png')} />
-        <Image style={styles.Image2} source={require('./assets/chat_first(2).png')} />
-        <StatusBar style="auto" />
-      </View>
-    </UserIdContext.Provider>
+    <View style={styles.container}>
+      <Text style={styles.topic}>解憂聊天室</Text>
+      <TouchableOpacity onPress={handleStartButtonPress} style={styles.buttonStart}>
+        <Text style={styles.textStart}>開始聊天</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleAccountButtonPress} style={styles.buttonAccount}>
+        <Text style={styles.textAccount}>帳號</Text>
+      </TouchableOpacity>
+      <Image style={styles.Image1} source={require('./assets/chat_first(1).png')} />
+      <Image style={styles.Image2} source={require('./assets/chat_first(2).png')} />
+      <StatusBar style="auto" />
+    </View>
   );
 }
 

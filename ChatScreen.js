@@ -1,16 +1,16 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { StatusBar } from "expo-status-bar";
 import { TouchableOpacity, StyleSheet, Text, View, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import axios from 'axios';
 import { AntDesign } from '@expo/vector-icons';
-import { UserIdContext } from './App';
-import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 const ChatScreen = () => {
     const [inputText, setInputText] = useState('');
     const [chatHistory, setChatHistory] = useState([]);
     const scrollViewRef = useRef();
-    const { user_id, setUser_id } = useContext(UserIdContext);
+    const route = useRoute();
+    const { ID } = route.params;
 
 
     const sendMesssage = async () => {

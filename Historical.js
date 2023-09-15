@@ -1,21 +1,49 @@
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity, StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { UserIdContext } from './App';
+import React, { useState, useContext } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
 
 const Historical = () => {
 
     const navigation = useNavigation();
     const currentDate = new Date();
     const [nextButtonPressed, setNextButton] = useState(true);
-    const { user_id, setUser_id } = useContext(UserIdContext);
+    const [score, setScore] = useState(30);
+    const route = useRoute();
+    const { ID2 } = route.params;
 
     const handleNextButton = () => {
         setNextButton(!nextButtonPressed)
     }
     const handleExitButton = () => {
         navigation.navigate('Second')
+    }
+    const getEmojiScore = () => {
+        if (score < 20) {
+            return require('./assets/emoji(5).png')
+        } else if (score > 19 && score < 40) {
+            return require('./assets/emoji(4).png')
+        } else if (score > 39 && score < 60) {
+            return require('./assets/emoji(3).png')
+        } else if (score > 59 && score < 80) {
+            return require('./assets/emoji(2).png')
+        } else {
+            return require('./assets/emoji(1).png')
+        }
+    }
+    const getTextScore = () => {
+        if (score < 20) {
+            return '糟透了'
+        } else if (score > 19 && score < 40) {
+            return '烏雲密布'
+        } else if (score > 39 && score < 60) {
+            return '平平淡淡'
+        } else if (score > 59 && score < 80) {
+            return '感覺還挺好'
+        } else {
+            return '心情超級棒'
+        }
     }
     const optionsY = {
         year: 'numeric'
@@ -38,16 +66,16 @@ const Historical = () => {
                 </TouchableOpacity>
             )}
             {nextButtonPressed && (
-                <Text style={{ ...styles.dateText, position: 'absolute', top: 280, left: 92 }}>{currentDate.toLocaleString('en-US', optionsY)}</Text>
+                <Text style={{ ...styles.dateText, position: 'absolute', top: 273, left: 110 }}>{currentDate.toLocaleString('en-US', optionsY)}</Text>
             )}
             {nextButtonPressed && (
-                <Text style={{ ...styles.dateText, position: 'absolute', top: 280, left: 163 }}>{currentDate.toLocaleString('en-US', optionsM)}</Text>
+                <Text style={{ ...styles.dateText, position: 'absolute', top: 273, left: 192 }}>{currentDate.toLocaleString('en-US', optionsM)}</Text>
             )}
             {nextButtonPressed && (
-                <Text style={{ ...styles.dateText, position: 'absolute', top: 280, left: 212 }}>{currentDate.toLocaleString('en-US', optionsD)}</Text>
+                <Text style={{ ...styles.dateText, position: 'absolute', top: 273, left: 247 }}>{currentDate.toLocaleString('en-US', optionsD)}</Text>
             )}
             {nextButtonPressed && (
-                <Text style={{ ...styles.dateText, position: 'absolute', top: 233, left: 100 }}>葛小明</Text>
+                <Text style={{ ...styles.dateText, position: 'absolute', top: 220, left: 110 }}>王曉慧</Text>
             )}
             {nextButtonPressed && (
                 <View style={styles.scrollView}>
@@ -58,12 +86,22 @@ const Historical = () => {
                     </ScrollView>
                 </View>
             )}
+            {nextButtonPressed && (
+                <Text style={{ ...styles.dateText, fontWeight: 'bold', position: 'absolute', top: 360, left: 110 }}>{getTextScore()}</Text>
+            )}
+            {nextButtonPressed && (
+                <Image
+                    source={getEmojiScore()}
+                    style={styles.emojiImage}
+                    resizeMode='contain'
+                />
+            )}
             {!nextButtonPressed && (
                 <Image style={styles.Image1} source={require('./assets/moody(2).png')} resizeMode='contain' />
             )}
             {!nextButtonPressed && (
                 <TouchableOpacity onPress={handleNextButton} style={styles.backButton}>
-                    <Text style={{ color: 'transparent' }}>back</Text>
+                    <AntDesign name='arrowleft' size={38} color='#BDBCBC' />
                 </TouchableOpacity>
             )}
             {!nextButtonPressed && (
@@ -102,23 +140,23 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     scrollView: {
-        width: 240,
-        height: 120,
-        marginTop: 275,
-        marginRight: 50,
+        width: 260,
+        height: 130,
+        marginTop: 300,
+        marginRight: 20,
     },
     scrollView2: {
-        width: 240,
-        height: 125,
-        marginBottom: 225,
+        width: 260,
+        height: 140,
+        marginBottom: 230,
         marginRight: 5,
     },
     scrollView3: {
-        width: 240,
-        height: 105,
+        width: 260,
+        height: 125,
         position: 'absolute',
-        bottom: 200,
-        left: 95,
+        bottom: 160,
+        left: 65,
     },
     topic: {
         fontSize: 28,
@@ -130,36 +168,40 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
+    emojiImage: {
+        position: 'absolute',
+        top: 310,
+        right: 80,
+        width: '15%',
+        height: '15%'
+    },
     dateText: {
         color: '#A28A82',
-        fontSize: 20,
+        fontSize: 22,
     },
     nextButton: {
         backgroundColor: 'transparent',
         position: 'absolute',
-        bottom: 155,
-        right: 10,
+        bottom: 95,
+        right: 25,
         height: 20,
         width: 60,
     },
     backButton: {
-        backgroundColor: 'transparent',
         position: 'absolute',
-        bottom: 135,
-        left: 10,
-        height: 25,
-        width: 50,
+        bottom: 88,
+        left: 30,
     },
     exitedButton: {
         backgroundColor: 'transparent',
         position: 'absolute',
         bottom: 95,
-        right: 50,
-        height: 50,
-        width: 25,
+        right: 30,
+        height: 20,
+        width: 60,
     },
     scrollViewContent: {
-        width: 240,
+        width: 260,
         marginTop: -10,
     },
     scrollText: {

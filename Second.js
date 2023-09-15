@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity, StyleSheet, Text, View, Image, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { UserIdContext } from './App';
 
 const SecondScreen = () => {
@@ -9,7 +9,8 @@ const SecondScreen = () => {
     const [nickname, setNickname] = useState('');
     const [birthday, setBirthday] = useState('');
     const [userData, setUserData] = useState({ name: '', birthdate: '' });
-    const [user_id, setUser_id] = useContext(UserIdContext);
+    const route = useRoute();
+    const { ID } = route.params;
 
     useEffect(() => {
         fetch('https://rwfbjrfymkkuxbqcqjej.supabase.co/get-user-info/${user_id}')
@@ -38,7 +39,7 @@ const SecondScreen = () => {
             .catch(error => console.error('Error', error));
     }
     const handleHistoricalButton = () => {
-        navigation.navigate('Historical')
+        navigation.navigate('Historical', { ID2: ID })
     }
 
     return (
