@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { TouchableOpacity, StyleSheet, Text, View, Image, Alert } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View, Image } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SecondScreen from './Second';
@@ -18,7 +18,7 @@ const Home = () => {
   console.log('initialVisit 的值為: ', initialVisit)
 
   const handleAccountButtonPress = () => {
-    navigation.navigate('Second', { ID: userId });
+    navigation.navigate('Second', { ID: userId });//點擊'帳號'會切換介面並傳ID(裡面的值是userId)過去
   }
   const handleStartButtonPress = () => {
     if (initialVisit === true) {
@@ -42,12 +42,12 @@ const Home = () => {
     }
     setInitialVisit(false)
   }
-  /*useEffect(() => {
+  useEffect(() => {
     if (userId !== undefined && userId !== '') {
       console.log('user_id已更新:', userId)
-      navigation.navigate('InterestPage')
+      navigation.navigate('InterestPage', { ID: userId })
     }
-  }, [userId])*/
+  }, [userId])
 
   return (
     <View style={styles.container}>

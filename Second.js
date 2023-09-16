@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity, StyleSheet, Text, View, Image, TextInput } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { UserIdContext } from './App';
 
 const SecondScreen = () => {
     const navigation = useNavigation();
@@ -13,33 +12,62 @@ const SecondScreen = () => {
     const { ID } = route.params;
 
     useEffect(() => {
-        fetch('https://rwfbjrfymkkuxbqcqjej.supabase.co/get-user-info/${user_id}')
-            .then(response => response.json())
-            .then(data => setUserData(data))
-            .catch(error => console.error('Error:', error));
-    }, []);
+        if (ID) {
+            console.log(`ID 存在Second且值為: ${ID}`);
+            fetch(`http://172.20.10.2:5000/api/get_name?user_id=${ID}`)
+                .then(response => response.json())
+                .then(data => {
+                    // 更新 UserData 的 name
+                    setNickname(data.user_name);
+                    console.log('name:', nickname);
+                })
+                .catch(error => {
+                    console.error('Error fetching user name:', error);
+                });
+            fetch(`http://172.20.10.2:5000/api/get_birthday?user_id=${ID}`)
+                .then(response => response.json())
+                .then(data => {
+                    // 更新 UserData 的 birthdate
+                    setBirthday(data.birthday);
+                    console.log('birthday:', birthday);
+                })
+                .catch(error => {
+                    console.error('Error fetching birthday:', error);
+                });
+        } else {
+            console.log('ID 不存在或為空');
+        }
+    }, [ID]);
 
-    const handleUpdate = () => {
+    const handleUpdate = async () => {
         console.log('Updated Nickname:', nickname);
         console.log('Update Birthday:', birthday);
-        fetch('https://rwfbjrfymkkuxbqcqjej.supabase.co/update-user-info/${user_id}', {
-            method: 'POST',
-            header: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                user_name: nickname,
-                birthday: birthday,
-            }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                setUserData(data);
-            })
-            .catch(error => console.error('Error', error));
+        const data = {
+            user_id: ID, // 替換為用戶的實際ID
+            name: nickname,
+            birthday: birthday
+        };
+        try {
+            const response = await fetch('http://172.20.10.2:5000/api/set', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            if (response.ok) {
+                // 更新成功
+                console.log('Update successful');
+            } else {
+                console.error('HTTP請求失敗:', response.status);
+            }
+        } catch (error) {
+            console.error('Error updating user info:', error);
+        }
     }
+
     const handleHistoricalButton = () => {
-        navigation.navigate('Historical', { ID2: ID })
+        navigation.navigate('Historical', { ID: ID })//將App.js傳來的ID再傳到Historical
     }
 
     return (
@@ -49,15 +77,15 @@ const SecondScreen = () => {
             <TextInput
                 style={styles.inputNickname}
                 placeholder='請輸入暱稱'
-                onChangeText={text => setNickname(text)}
-                value={userData.user_name}
+                onChangeText={text => setNickname(text)}//輸入的值會設為nickName
+                value={userData.user_name}//設定裡面會等於的值
             />
             <Text style={styles.Textbirthday}>出生日期:</Text>
             <TextInput
                 style={styles.inputBirthday}
                 placeholder='MM/DD'
-                onChangeText={text => setBirthday(text)}
-                value={userData.birthdate}
+                onChangeText={text => setBirthday(text)}//輸入的值會設為birthday
+                value={userData.birthdate}//設定裡面會等於的值
             />
             <Text style={{ ...styles.topic, position: 'absolute', top: 270, left: 60 }}>主題更換</Text>
             <Text style={{ ...styles.topic, position: 'absolute', top: 325, left: 60 }}>偏好設定</Text>

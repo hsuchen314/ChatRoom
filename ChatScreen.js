@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { StatusBar } from "expo-status-bar";
 import { TouchableOpacity, StyleSheet, Text, View, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import axios from 'axios';
 import { AntDesign } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 
@@ -15,23 +14,34 @@ const ChatScreen = () => {
 
     const sendMesssage = async () => {
         try {
-            const response = await axios.post(
-                'https://api.openai.com/v1/engines/text-davinci-003/completions',
-                {
-                    prompt: inputText,
-                    max_tokens: 200,
+            const data = {
+                user_id: ID,  // 替換為用戶的實際ID
+                message: inputText
+            };
+            console.log("ID:", ID)
+            const response = await fetch('http://172.20.10.2:5000/api/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                {
-                    headers: {
-                        Authorization: 'Bearer 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',
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+                body: JSON.stringify(data)
+            });
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData);
+                const aiResponse = responseData.response;
+                console.log("AI Response:", aiResponse); // 輸出AI的回應
 
-            const reply = response.data.choices[0].text;
-            setChatHistory([...chatHistory, { user: inputText, bot: reply }]);
-            setInputText('');
+                // 更新聊天歷史和清空輸入框
+                setChatHistory([...chatHistory, { user: inputText, bot: aiResponse }]);
+                setInputText('');
+
+                console.log("Updated chatHistory:", chatHistory); // 輸出更新後的chatHistory
+                console.log("Cleared inputText:", inputText); // 輸出清空後的inputText
+            } else {
+                console.error('HTTP請求失敗:', response.status);
+            }
+
         } catch (error) {
             console.error('Error sending message:', error);
         }

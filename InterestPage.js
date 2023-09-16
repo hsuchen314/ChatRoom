@@ -15,10 +15,11 @@ const InterestPage = () => {
     const [outdoorPressed, setOutdoorPressed] = useState(true);
     const [sportPressed, setSportPressed] = useState(true);
     const route = useRoute();
-    const { ID } = route.params;
+    const { ID } = route.params;//從App.js傳過來的ID，ID的值就是App.js的userId
 
     const handleCheckButtonPress = () => {
-        navigation.navigate('ChatScreen')
+        navigation.navigate('ChatScreen', { ID: ID });//依據'興趣Pressed'的值，將選擇的資料回傳(等於false是被選擇的)
+        //依據isPressed的值，判斷回傳到資料庫的內容是學生(isPressed==true)or上班族(isPressed==false)
     }
     const handleJobPress = () => {
         setIsPressed(!isPressed);

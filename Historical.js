@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity, StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -9,15 +9,84 @@ const Historical = () => {
     const navigation = useNavigation();
     const currentDate = new Date();
     const [nextButtonPressed, setNextButton] = useState(true);
-    const [score, setScore] = useState(30);
+    const [score, setScore] = useState(null);
+    const [userName, setUserName] = useState('');
+    const [describe, setDescribe] = useState('');
+    const [suggest, setSuggest] = useState('');
+    const [attention, setAttention] = useState('');
     const route = useRoute();
-    const { ID2 } = route.params;
+    const { ID } = route.params;
+
+    useEffect(() => {
+        if (ID) {
+            console.log(`ID 存在Historical且值為: ${ID}`);
+            fetch(`http://172.20.10.2:5000/api/get_score?user_id=${ID}`)
+                .then(response => response.json())
+                .then(data => {
+                    setScore(data.score);
+                })
+                .catch(error => {
+                    console.error('Error fetching score:', error);
+                });
+        } else {
+            console.log('ID 不存在Historical或為空');
+            // 在這裡執行需要在 ID 不存在或為空時執行的代碼
+        }
+    }, [ID]);
+
+    useEffect(() => {
+        if (ID) {
+            fetch(`http://172.20.10.2:5000/api/get_name?user_id=${ID}`)
+                .then(response => response.json())
+                .then(data => {
+                    setUserName(data.user_name);
+                })
+                .catch(error => {
+                    console.error('Error fetching user name:', error);
+                });
+        }
+    }, [ID]);
+
+    useEffect(() => {
+        if (ID) {
+            console.log(`ID 存在Historical且值為: ${ID}`);
+
+            // 獲取心情報告
+            fetch(`http://172.20.10.2:5000/api/get_report?user_id=${ID}`, {
+                method: 'POST', // 使用POST請求
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.report) {
+                        // 將心情報告字符串分割成不同部分
+                        const reportParts = data.report.split('\n');
+                        if (reportParts.length >= 4) {
+                            setDescribe(reportParts[1].split(':')[1]);
+                            setSuggest(reportParts[2].split(':')[1]);
+                            setAttention(reportParts[3].split(':')[1]);
+                            console.log('describe:', describe);
+                            console.log('suggest:', suggest);
+                            console.log('attention:', attention);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching emotion report:', error);
+                });
+        } else {
+            console.log('ID 不存在Historical或為空');
+            // 在這裡執行需要在 ID 不存在或為空时執行的代碼
+        }
+    }, [ID]);
+
+
+
 
     const handleNextButton = () => {
         setNextButton(!nextButtonPressed)
     }
     const handleExitButton = () => {
-        navigation.navigate('Second')
+        navigation.navigate('Second', { ID: ID })
     }
     const getEmojiScore = () => {
         if (score < 20) {
@@ -75,13 +144,13 @@ const Historical = () => {
                 <Text style={{ ...styles.dateText, position: 'absolute', top: 273, left: 247 }}>{currentDate.toLocaleString('en-US', optionsD)}</Text>
             )}
             {nextButtonPressed && (
-                <Text style={{ ...styles.dateText, position: 'absolute', top: 220, left: 110 }}>王曉慧</Text>
+                <Text style={{ ...styles.dateText, position: 'absolute', top: 220, left: 110 }}>{userName}</Text>
             )}
             {nextButtonPressed && (
                 <View style={styles.scrollView}>
                     <ScrollView contentContainerStyle={styles.scrollViewContent}>
                         <Text style={styles.scrollText}>
-                            這邊是放入資料庫的資料，放在這裡的字都會顯示在"描述"的框框內。
+                            {describe}
                         </Text>
                     </ScrollView>
                 </View>
@@ -113,7 +182,7 @@ const Historical = () => {
                 <View style={styles.scrollView2}>
                     <ScrollView contentContainerStyle={styles.scrollViewContent}>
                         <Text style={styles.scrollText}>
-                            這邊是放入資料庫的資料，放在這裡的字都會顯示在"建議"的框框內。
+                            {suggest}
                         </Text>
                     </ScrollView>
                 </View>
@@ -122,7 +191,7 @@ const Historical = () => {
                 <View style={styles.scrollView3}>
                     <ScrollView contentContainerStyle={styles.scrollViewContent}>
                         <Text style={styles.scrollText}>
-                            這邊是放入資料庫的資料，放在這裡的字都會顯示在"注意事項"的框框內。
+                            {attention}
                         </Text>
                     </ScrollView>
                 </View>
